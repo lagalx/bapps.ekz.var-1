@@ -10,12 +10,15 @@ CONFIG += c++17
 
 SOURCES += \
     cardwidget.cpp \
+    crypton.cpp \
     gamewindow.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
     cardwidget.h \
+    crypton.h \
+    data.h \
     gamewindow.h \
     mainwindow.h
 

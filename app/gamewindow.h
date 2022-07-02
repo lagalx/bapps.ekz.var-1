@@ -3,6 +3,9 @@
 
 #include <QMainWindow>
 
+#include "crypton.h"
+#include "data.h"
+
 namespace Ui {
 class GameWindow;
 }
@@ -10,27 +13,30 @@ class GameWindow;
 class GameWindow : public QMainWindow {
   Q_OBJECT
 
-public:
+ public:
   explicit GameWindow(QWidget *parent = nullptr);
   ~GameWindow();
 
-  void addCard(const int score);
+  void addCard(const QString encScore);
   void initGame();
   void endGame();
 
-public slots:
-  void cardPressed(const int score);
+ public slots:
+  void cardPressed(const int64_t score);
 
-private slots:
+ private slots:
   void on_restartButton_clicked();
 
-private:
+ private:
   Ui::GameWindow *ui;
 
-  const size_t FIELD_SIZE = 3 * 3;  
-  const size_t MAX_CLICKED = 3;
-  size_t clickedAmount = 0;
-  int scoreSum = 0;
+  const uint FIELD_SIZE = 3 * 3;
+  const uint MAX_CLICKED = 3;
+  uint clickedAmount = 0;
+  int64_t scoreSum = 0;
+  Crypton crypton = Crypton(GOOD_PASSWORD);
+ signals:
+  void setCardScoreLabel(const QString score);
 };
 
-#endif // GAMEWINDOW_H
+#endif  // GAMEWINDOW_H

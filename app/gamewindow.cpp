@@ -1,5 +1,6 @@
 #include "gamewindow.h"
 
+#include <QDebug>
 #include <QMessageBox>
 #include <QRandomGenerator>
 
@@ -24,29 +25,31 @@ void GameWindow::initGame() {
   ui->scoreLabel->setText(QString::number(scoreSum));
 
   for (auto i = 0; i < FIELD_SIZE; i++) {
-    auto score = QRandomGenerator::global()->generate();
-    addCard(score);
+    const auto score = QRandomGenerator::global()->generate();
+    const auto encScore = crypton.encrypt(QString::number(score));
+    qDebug() << score << " : " << encScore;
+    addCard(encScore);
   }
 }
 
-void GameWindow::addCard(const int score) {
+void GameWindow::addCard(const QString encScore) {
   auto listItemW = new QListWidgetItem();
-  auto itemW = new CardWidget(score, this);
+  auto itemW = new CardWidget(encScore, this);
 
   listItemW->setSizeHint(itemW->sizeHint());
 
   ui->cardsListWidget->addItem(listItemW);
   ui->cardsListWidget->setItemWidget(listItemW, itemW);
 
-  QObject::connect(itemW, SIGNAL(cardClicked(const int)), this,
-                   SLOT(cardPressed(const int)));
+  QObject::connect(itemW, SIGNAL(cardClicked(const int64_t)), this,
+                   SLOT(cardPressed(const int64_t)));
 }
 
-void GameWindow::cardPressed(const int score) {
+void GameWindow::cardPressed(const int64_t score) {
   scoreSum += score;
   ui->scoreLabel->setText(QString::number(scoreSum));
-  clickedAmount++;
 
+  clickedAmount++;
   if (clickedAmount != MAX_CLICKED) {
     return;
   }
